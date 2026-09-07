@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = "https://revenue-recover-ai-1-1c4i.onrender.com";
 
 
 // --------------------------------------------------
