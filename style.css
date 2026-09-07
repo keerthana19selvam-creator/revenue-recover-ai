@@ -1,0 +1,138 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+header {
+    background: #1e3a8a;
+    color: white;
+    padding: 25px 8%;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin-bottom: 0;
+}
+
+.container {
+    width: 85%;
+    margin: 30px auto;
+}
+
+button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#payments {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.payment-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.payment-card h3 {
+    margin-top: 0;
+}
+
+.probability {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.action {
+    background: #eff6ff;
+    padding: 10px;
+    border-radius: 6px;
+}
+.summary {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.summary-card {
+    background: white;
+    padding: 18px 25px;
+    border-radius: 12px;
+    min-width: 200px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.summary-card h3 {
+    margin: 0;
+    font-size: 28px;
+    color: #2563eb;
+}
+
+.summary-card p {
+    margin-bottom: 0;
+    color: #6b7280;
+}/* AI Prediction Section */
+
+.prediction-box {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.prediction-box h2 {
+    margin-bottom: 20px;
+}
+
+.prediction-box input {
+    width: 90%;
+    max-width: 400px;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.prediction-box button {
+    margin-top: 15px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+#prediction-result {
+    font-size: 32px;
+    margin-top: 20px;
+}
+
+#prediction-message {
+    font-size: 16px;
+    margin-top: 10px;
+}

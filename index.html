@@ -1,0 +1,307 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recover AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Recover AI</h1>
+    <p>AI-Powered Revenue Recovery Intelligence Platform</p>
+</header>
+
+<main class="container">
+
+    <h2>Payment Recovery Dashboard</h2>
+
+    <div class="summary">
+
+        <div class="summary-card">
+            <h3 id="revenue-risk">₹0</h3>
+            <p>Revenue at Risk</p>
+        </div>
+
+        <div class="summary-card">
+            <h3 id="average-probability">0%</h3>
+            <p>Average Recovery Probability</p>
+        </div>
+
+        <div class="summary-card">
+            <h3 id="action-count">0</h3>
+            <p>Payments Requiring Action</p>
+        </div>
+
+    </div>
+<div class="prediction-box">
+
+    <h2>AI Recovery Prediction</h2>
+
+    <input
+        type="number"
+        id="payment-amount"
+        placeholder="Payment Amount"
+    >
+
+    <input
+        type="number"
+        id="customer-history"
+        placeholder="Customer History Score (0-100)"
+    >
+
+    <input
+        type="number"
+        id="days-overdue"
+        placeholder="Days Overdue"
+    >
+
+    <button onclick="predictRecovery()">
+        Predict Recovery
+    </button>
+
+    <h3 id="prediction-result">--%</h3>
+
+    <p id="prediction-message">
+        Enter payment details to get AI prediction.
+    </p>
+
+</div>
+    <button onclick="loadPayments()">
+        Analyze Payments
+    </button>
+
+    <div id="payments"></div>
+
+</main>
+
+<script>
+
+function loadPayments() {
+
+    fetch("http://127.0.0.1:5000/payments")
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            let output = "";
+
+            data.forEach(payment => {
+
+            output += `
+    <div class="payment-card">
+
+        <h3>${payment.customer}</h3>
+
+        <p>
+            <strong>Payment ID:</strong>
+            ${payment.id}
+        </p>
+
+        <p>
+            <strong>Amount:</strong>
+            ₹${payment.amount.toLocaleString("en-IN")}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            ${payment.status}
+        </p>
+
+        <p class="probability">
+            <strong>Recovery Probability:</strong>
+            ${payment.recovery_probability}%
+        </p>
+
+        <p class="action">
+            <strong>AI Recommended Action:</strong><br>
+            ${payment.recommended_action}
+        </p>
+
+        <button onclick="analyzePayment('${payment.id}')">
+            🤖 Analyze Payment
+        </button>
+
+    </div>
+`;
+            });
+
+            document.getElementById("payments").innerHTML = output;
+
+        })
+
+        .catch(error => {
+
+            document.getElementById("payments").innerHTML =
+                "<p>Error connecting to Recover AI backend.</p>";
+
+            console.error(error);
+
+        });
+}
+
+
+function loadAnalytics() {
+
+    fetch("http://127.0.0.1:5000/analytics")
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            console.log("Analytics received:", data);
+
+            document.getElementById("revenue-risk").textContent =
+                "₹" + Number(data.total_amount).toLocaleString();
+
+            document.getElementById("average-probability").textContent =
+    data.average_recovery_probability + "%";
+            document.getElementById("action-count").textContent =
+                data.failed_payments + data.pending_payments;
+
+        })
+
+        .catch(error => {
+
+            console.error("Analytics error:", error);
+
+        });
+}
+function analyzePayment(paymentId) {
+
+    fetch("http://127.0.0.1:5000/payments")
+        .then(response => response.json())
+        .then(payments => {
+
+            const payment = payments.find(
+                p => p.id === paymentId
+            );
+
+            if (!payment) {
+                alert("Payment not found!");
+                return;
+            }
+
+            const features = [
+                payment.amount,
+                payment.status === "Failed" ? 1 : 0,
+                payment.recovery_probability
+            ];
+
+            return fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    features: features
+                })
+            });
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.success) {
+
+                alert(
+                    "🤖 AI Payment Analysis\n\n" +
+                    "AI Prediction: " +
+                    Math.round(data.prediction) +
+                    "%"
+                );
+
+            } else {
+
+                alert("Prediction Error: " + data.error);
+
+            }
+
+        })
+        .catch(error => {
+
+            console.error("Analysis error:", error);
+
+            alert("Unable to connect to AI backend.");
+
+        });
+}
+function predictRecovery() {
+    const amount = Number(document.getElementById("payment-amount").value);
+    const history = Number(document.getElementById("customer-history").value);
+    const overdue = Number(document.getElementById("days-overdue").value);
+
+    if (!amount || !history || overdue < 0) {
+        alert("Please enter valid payment details.");
+        return;
+    }
+
+    fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            features: [amount, history, overdue]
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.success) {
+
+            const probability = Math.round(data.prediction);
+
+            let action;
+
+            if (probability >= 80) {
+                action = "Retry Payment";
+            } 
+            else if (probability >= 60) {
+                action = "Send Smart Reminder";
+            } 
+            else if (probability >= 40) {
+                action = "Offer Alternative Payment";
+            } 
+            else {
+                action = "Manual Follow-up";
+            }
+
+            document.getElementById("prediction-result").textContent =
+                probability + "%";
+
+            document.getElementById("prediction-message").innerHTML =
+                "AI prediction completed successfully.<br><br>" +
+                "<strong>Recommended Action:</strong> " + action;
+
+        } else {
+
+            document.getElementById("prediction-result").textContent =
+                "Error";
+
+            document.getElementById("prediction-message").textContent =
+                data.error;
+        }
+
+    })
+    .catch(error => {
+
+        console.error("Prediction error:", error);
+
+        document.getElementById("prediction-message").textContent =
+            "Unable to connect to AI backend.";
+    });
+}
+
+loadAnalytics();
+
+</script>
+
+</body>
+</html>
+```
