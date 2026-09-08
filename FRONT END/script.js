@@ -1,4 +1,4 @@
-const API_URL = "https://revenue-recover-ai-1-1c4i.onrender.com";
+const API_URL = "https://revenue-recover-ai-2.onrender.com";
 
 // --------------------------------------------------
 // LOAD PAYMENTS
